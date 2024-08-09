@@ -15,7 +15,7 @@ html, body, #root {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 20px;
+  /* padding: 20px; */
   color: white; /* Ensure text stands out against a dark background */
   border-radius: 8px;
   
@@ -26,7 +26,7 @@ html, body, #root {
 }
 
 .container {
-  max-width: 600px;
+  /* max-width: 600px; */
   padding: 24px;
   border-radius: 8px;
 
@@ -61,6 +61,19 @@ html, body, #root {
   border-radius: 3px;
   box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.35);
 }
+
+@media screen and (max-width: 768px) {
+  .word-magnet {
+    font-size: 20px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .word-magnet {
+    font-size: 14px; 
+  }
+}
+
 
 .btn {
   background: linear-gradient(45deg, #ff6b6b, #f06595, #b5179e, #7209b7, #560bad, #480ca8, #3a0ca3, #3f37c9);

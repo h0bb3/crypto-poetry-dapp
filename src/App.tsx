@@ -8,7 +8,6 @@ import { IDL } from './idl';
 import { RefridgeratorPoetry } from "./types/refridgerator_poetry";
 import RefrigeratorMagnetPoem from './RefrigeratorMagnetPoem';
 import './App.css';
-import { set } from '@coral-xyz/anchor/dist/cjs/utils/features';
 
 type ProgramType = Program<RefridgeratorPoetry>;
 
