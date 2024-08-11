@@ -38,14 +38,15 @@ const RefrigeratorMagnetPoem: React.FC<RefrigeratorMagnetPoemProps> = ({ poem })
   const poemHash = hashString(poem);
 
   return (
-    <div style={{ padding: '10px'}}>
+    <div style={{ padding: '10px', width: '100%', overflowX: 'hidden' }}>
       {lines.map((line, lineIndex) => (
         <div
           key={lineIndex}
           style={{
             display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
             marginBottom: '8px',
-            marginLeft: `${generateConsistentMargin(poemHash, lineIndex)}px`,
           }}
         >
           {line.split(/\s+/).filter(word => word !== '').map((word, wordIndex) => (
@@ -54,6 +55,7 @@ const RefrigeratorMagnetPoem: React.FC<RefrigeratorMagnetPoemProps> = ({ poem })
               className="word-magnet"
               style={{
                 transform: `rotate(${generateConsistentRotation(poemHash, lineIndex * line.length + wordIndex)}deg)`,
+                margin: '2px',
               }}
             >
               {word}

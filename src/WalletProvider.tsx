@@ -7,15 +7,20 @@ import { clusterApiUrl } from "@solana/web3.js";
 
 require('@solana/wallet-adapter-react-ui/styles.css');
 
+
 const WalletProviderWrapper: FC<{ children: React.ReactNode }> = ({ children }) => {
+  // We'll always use Devnet for the network, but change the endpoint for local development
   const network = WalletAdapterNetwork.Devnet;
-  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+  
+  const endpoint = useMemo(() => {
+    // return 'http://127.0.0.1:8899';
+    return clusterApiUrl(network);
+  }, [network]);
 
   const wallets = useMemo(
     () => [
-      new PhantomWalletAdapter({ network })
     ],
-    [network]
+    []
   );
 
   return (

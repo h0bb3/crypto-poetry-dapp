@@ -1,46 +1,43 @@
+@import '@solana/wallet-adapter-react-ui/styles.css';
+
 html, body, #root {
   height: 100%;
   margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   font-family: 'Arial', sans-serif;
-  background: linear-gradient(135deg, #240046, #57007d);
-  background-repeat: no-repeat;
-  background-attachment: fixed;
 }
 
-.App {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  color: white;
-  width: 100%;
-  max-width: 600px;
-  padding: 20px;
-  box-sizing: border-box;
+.wallet-adapter-button {
+  background: linear-gradient(45deg, #ff6b6b, #f06595, #b5179e, #7209b7) !important;
+  color: white !important;
+  transition: all 0.3s ease-in-out !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
 }
 
-.h1, .container, .button, .text-center, .mb-6, .text-3xl, .font-bold, .transition, .duration-300, .ease-in-out, .transform, .hover\:scale-105, .mt-8, .text-2xl, .font-semibold, .mb-4 {
-  margin-bottom: 16px;
+.wallet-adapter-button:hover {
+  transform: scale(1.05) !important;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3) !important;
 }
 
-.container {
-  width: 100%;
-  padding: 24px;
-  border-radius: 8px;
-  background: linear-gradient(-135deg, #240046, #57007d);
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+.wallet-adapter-button:not([disabled]):hover {
+  background: linear-gradient(45deg, #ff8b8b, #f285b5, #c539ae, #9229d7) !important;
+}
+
+.wallet-adapter-modal-wrapper {
+  background: linear-gradient(to bottom right, #240046, #57007d) !important;
+}
+
+.wallet-adapter-modal-button-close {
+  background: #ff6b6b !important;
+}
+
+.wallet-adapter-modal-button-close:hover {
+  background: #ff8b8b !important;
 }
 
 .btn {
-  background: linear-gradient(45deg, #ff6b6b, #f06595, #b5179e, #7209b7, #560bad, #480ca8, #3a0ca3, #3f37c9);
+  background: linear-gradient(45deg, #ff6b6b, #f06595, #b5179e, #7209b7);
   background-size: 400% 400%;
   color: white;
-  margin-top: 17px;
-  margin-bottom: 33px;
   padding: 15px 30px;
   border: none;
   border-radius: 25px;
@@ -53,13 +50,25 @@ html, body, #root {
   max-width: 300px;
 }
 
+.btn:hover {
+  animation: gradient-animation 1.5s linear infinite;
+  transform: scale(1.05);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes gradient-animation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 75% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 .word-magnet {
   color: black;
   padding: 4px 8px;
   margin: 2px;
   background-color: #e0e0e0;
   border: 1px solid #000;
-  whiteSpace: 'nowrap';
+  white-space: nowrap;
   font-family: 'times, serif';
   font-size: 24px;
   border-radius: 3px;
@@ -78,50 +87,6 @@ html, body, #root {
   }
 }
 
-
-@media screen and (max-width: 768px) {
-  .App {
-    padding: 10px;
-  }
-
-  .container {
-    padding: 16px;
-  }
-
-  h1 {
-    font-size: 1.5rem;
-  }
-
-  .btn {
-    font-size: 14px;
-    padding: 12px 24px;
-  }
-}
-
-@media screen and (max-width: 480px) {
-  h1 {
-    font-size: 1.2rem;
-  }
-
-  .btn {
-    font-size: 12px;
-    padding: 10px 20px;
-  }
-}
-
-
-.btn:hover {
-  animation: gradient-animation 1.5s linear infinite;
-  transform: scale(1.05);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-}
-
-@keyframes gradient-animation {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 75% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -129,24 +94,4 @@ html, body, #root {
 
 .fade-in {
   animation: fadeIn 1s ease-in-out;
-}
-
-h1 {
-  margin-bottom: 30px;
-  font-size: 2rem;
-  background: linear-gradient(90deg, #ff0057, #ff69b4, #8a2be2, #4b0082);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  animation: textShine 3s linear infinite;
-  transition: all 0.3s ease-in-out;
-}
-
-@keyframes textShine {
-  0% {
-    background-position: 0%;
-  }
-  100% {
-    background-position: 200%;
-  }
 }
