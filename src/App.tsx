@@ -33,16 +33,16 @@ const L33tModeToggle: React.FC = () => {
 
 const AppContents: React.FC = () => {
 
-  const { isL33tMode, toggleL33tMode, useAutoL33t } = useL33tMode();
-  const containerRef = useAutoL33t(['excluded-class']);
+  // const { isL33tMode, toggleL33tMode, useAutoL33t } = useL33tMode();
+  // const containerRef = useAutoL33t(['excluded-class']);
 
   return (
 
         <div className="min-h-screen bg-gradient-to-br from-purple-900 to-indigo-900 text-white p-4 md:p-8">
-          <div className="absolute top-4 right-4">
+          {/* <div className="absolute top-4 right-4">
             <L33tModeToggle />
-          </div>
-          <div ref={containerRef} className="max-w-lg mx-auto">
+          </div> */}
+          <div className="max-w-lg mx-auto">
             <h1 className="text-5xl font-bold mb-8 text-center text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-300">
               Crypto Poetry
             </h1>
