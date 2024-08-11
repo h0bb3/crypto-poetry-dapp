@@ -3,6 +3,7 @@ import { Program, AnchorProvider } from '@coral-xyz/anchor';
 import { useAnchorWallet, useConnection } from '@solana/wallet-adapter-react';
 import { CryptoPoetry } from "./types/crypto_poetry";
 import { IDL } from './idl';
+import { Connection, PublicKey } from '@solana/web3.js';
 
 type ProgramContextType = {
   program: Program<CryptoPoetry> | null;
@@ -24,13 +25,25 @@ export const ProgramProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   useEffect(() => {
     const initializeProgram = async () => {
+      let provider;
+      
       if (wallet) {
-        const provider = new AnchorProvider(connection, wallet, {});
-        const program = new Program(IDL, provider);
-        setProgram(program);
+        provider = new AnchorProvider(connection, wallet, {});
       } else {
-        setProgram(null);
+        // Create a read-only provider when no wallet is connected
+        provider = new AnchorProvider(
+          connection,
+          {
+            publicKey: PublicKey.default,
+            signTransaction: async () => { throw new Error("Wallet not connected"); },
+            signAllTransactions: async () => { throw new Error("Wallet not connected"); },
+          },
+          AnchorProvider.defaultOptions()
+        );
       }
+
+      const program = new Program(IDL, provider);
+      setProgram(program);
       setIsInitializing(false);
     };
 

@@ -12,10 +12,12 @@ const PoemPage: React.FC = () => {
   const navigate = useNavigate();
   const [poem, setPoem] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   const [copySuccess, setCopySuccess] = useState<boolean>(false);
   const { program, isInitializing } = useProgram();
 
   useEffect(() => {
+    console.log("PoemPage useEffect", poemHash, program, isInitializing);
     if (poemHash && program && !isInitializing) {
       fetchPoemByHash(poemHash);
     }
@@ -25,6 +27,7 @@ const PoemPage: React.FC = () => {
     if (!program) return;
 
     setIsLoading(true);
+    setError(null);
 
     try {
       const poemPublicKey = new PublicKey(hash);
@@ -32,6 +35,7 @@ const PoemPage: React.FC = () => {
       setPoem(account.poem);
     } catch (error) {
       console.error("Error fetching poem:", error);
+      setError("Failed to fetch the poem. It may not exist or there was a network error.");
       setPoem('');
     } finally {
       setIsLoading(false);
@@ -42,6 +46,7 @@ const PoemPage: React.FC = () => {
     if (!wallet || !program || !poemHash) return;
 
     setIsLoading(true);
+    setError(null);
 
     try {
       const poemPublicKey = new PublicKey(poemHash);
@@ -56,9 +61,9 @@ const PoemPage: React.FC = () => {
 
       const account = await program.account.poetryAccount.fetch(poemPublicKey) as PoetryAccount;
       setPoem(account.poem);
-
     } catch (error) {
       console.error("Error in poem regeneration process:", error);
+      setError("Failed to regenerate the poem. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -68,6 +73,7 @@ const PoemPage: React.FC = () => {
     if (!wallet || !poemHash || !program) return;
 
     setIsLoading(true);
+    setError(null);
 
     try {
       const poemPublicKey = new PublicKey(poemHash);
@@ -83,6 +89,7 @@ const PoemPage: React.FC = () => {
       navigate('/');
     } catch (error) {
       console.error("Error deleting poem:", error);
+      setError("Failed to delete the poem. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -101,26 +108,32 @@ const PoemPage: React.FC = () => {
     return <div className='text-center'>Loading...</div>;
   }
 
+  if (error) {
+    return <div className='text-center text-red-500'>{error}</div>;
+  }
+
   return (
     <div className="text-center">
       {poem ? (
         <>
           <RefrigeratorMagnetPoem poem={poem} />
           <div className="mt-4 space-y-2">
-            <button
-              onClick={regeneratePoem}
-              className="btn"
-              disabled={!wallet}
-            >
-              Regenerate Poem
-            </button>
-            <button
-              onClick={deletePoem}
-              className="btn"
-              disabled={!wallet}
-            >
-              Delete Poem
-            </button>
+            {wallet && (
+              <>
+                <button
+                  onClick={regeneratePoem}
+                  className="btn"
+                >
+                  Regenerate Poem
+                </button>
+                <button
+                  onClick={deletePoem}
+                  className="btn"
+                >
+                  Delete Poem
+                </button>
+              </>
+            )}
             <button
               onClick={copyUrlToClipboard}
               className="btn"
@@ -134,15 +147,13 @@ const PoemPage: React.FC = () => {
           <p>No poem found</p>
         </div>
       )}
-      <div>
-        {wallet && (
-          <button
-            onClick={() => navigate('/')}
-            className="btn mt-4"
-          >
-            Back to Home
-          </button>
-        )}
+      <div className="mt-4">
+        <button
+          onClick={() => navigate('/')}
+          className="btn"
+        >
+          Back to Home
+        </button>
       </div>
     </div>
   );
