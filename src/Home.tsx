@@ -25,13 +25,13 @@ const Home: React.FC = () => {
   const { program, isInitializing } = useProgram();
 
   useEffect(() => {
-    if (wallet && program) {
+    if (program) {
       fetchUserPoems();
     }
   }, [wallet, program]);
 
   const fetchUserPoems = async () => {
-    if (!wallet || !program) return;
+    if (!program) return;
 
     const replaceLastWordWithEllipsis = (text: string): string => {
         const words = text.trim().split(/\s+/);
@@ -45,11 +45,9 @@ const Home: React.FC = () => {
 
       const userPoems = await Promise.all(accounts.map(async ({ pubkey, account }) => {
         const poemAccount = await program.account.poetryAccount.fetch(pubkey) as PoetryAccount;
-        
-        if (poemAccount.owner.equals(wallet.publicKey)) {
+        if ((wallet && poemAccount.owner.equals(wallet.publicKey)) || !wallet) {
           return {
             id: pubkey.toString(),
-            // Use the first line of the poem as the title and set the last word to "..."
             title: replaceLastWordWithEllipsis(poemAccount.poem.split('\n')[0]) || 'Untitled Poem',
             content: poemAccount.poem,
           };
@@ -105,6 +103,7 @@ const Home: React.FC = () => {
     <div >
     
         {wallet ? (
+            <>
           <div className='text-center mt-4'>
             <button
               onClick={generateAndFetchPoem}
@@ -114,11 +113,23 @@ const Home: React.FC = () => {
               {isLoading ? 'Generating...' : 'Generate New Poem'}
             </button>
             
-            <UserPoemList poems={poems} isLoading={isLoading} />
           </div>
+          <h2 className="text-2xl font-bold mt-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-300">
+            Your Poems
+            </h2>
+            </>
         ) : (
-          <p className="text-center text-xl bg-purple-800 bg-opacity-30 backdrop-filter backdrop-blur-lg rounded-2xl p-8">Connect your wallet to generate a poem</p>
+            <>
+                <p className="text-center text-xl bg-purple-800 bg-opacity-30 backdrop-filter backdrop-blur-lg rounded-2xl p-8">Connect your wallet to generate a poem</p>
+                <h2 className="text-2xl font-bold mt-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-300">
+                    Poems
+                </h2>
+            </>
+        
         )}
+        
+        <UserPoemList poems={poems} isLoading={isLoading} />
+
       </div>
   );
 };

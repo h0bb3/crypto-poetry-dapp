@@ -20,9 +20,7 @@ const UserPoemList: React.FC<UserPoemListProps> = ({ poems, isLoading }) => {
 
   return (
     <div className="mt-8">
-      <h2 className="text-2xl font-bold mb-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-300">
-        Your Poems
-      </h2>
+      
       {poems.length === 0 ? (
         <p className="text-center text-pink-200">You haven't created any poems yet.</p>
       ) : (
