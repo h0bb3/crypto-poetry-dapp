@@ -38,7 +38,7 @@ const RefrigeratorMagnetPoem: React.FC<RefrigeratorMagnetPoemProps> = ({ poem })
   const poemHash = hashString(poem);
 
   return (
-    <div style={{ padding: '10px', width: '100%', overflowX: 'hidden' }}>
+    <div style={{ width: '100%', overflowX: 'hidden' }}>
       {lines.map((line, lineIndex) => (
         <div
           key={lineIndex}

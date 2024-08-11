@@ -6,6 +6,7 @@ import { useProgram } from './ProgramContext';
 import UserPoemList from './UserPoemList';
 
 
+
 interface Poem {
   id: string;
   title: string;
@@ -100,8 +101,7 @@ const Home: React.FC = () => {
   }
 
   return (
-    <div >
-    
+    <div>
         {wallet ? (
             <>
           <div className='text-center mt-4'>

@@ -11,6 +11,7 @@ const PoemPage: React.FC = () => {
   const wallet = useAnchorWallet();
   const navigate = useNavigate();
   const [poem, setPoem] = useState<string>('');
+  const [poemOwner, setPoemOwner] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [copySuccess, setCopySuccess] = useState<boolean>(false);
@@ -33,6 +34,7 @@ const PoemPage: React.FC = () => {
       const poemPublicKey = new PublicKey(hash);
       const account = await program.account.poetryAccount.fetch(poemPublicKey) as PoetryAccount;
       setPoem(account.poem);
+      setPoemOwner(account.owner.toString());
     } catch (error) {
       console.error("Error fetching poem:", error);
       setError("Failed to fetch the poem. It may not exist or there was a network error.");
@@ -104,6 +106,18 @@ const PoemPage: React.FC = () => {
       .catch((err) => console.error('Failed to copy: ', err));
   };
 
+  const renderPoemSignature = () => {
+    if (!poemOwner || (wallet && wallet.publicKey.toString() === poemOwner)) {
+      return null;
+    }
+
+    return (
+      <div className="text-center text-sm text-gray-300">
+        creator: {poemOwner}
+      </div>
+    );
+  };
+
   if (isInitializing || isLoading) {
     return <div className='text-center'>Loading...</div>;
   }
@@ -117,6 +131,7 @@ const PoemPage: React.FC = () => {
       {poem ? (
         <>
           <RefrigeratorMagnetPoem poem={poem} />
+          {renderPoemSignature()}
           <div className="mt-4 space-y-2">
             {wallet && (
               <>

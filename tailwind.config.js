@@ -4,8 +4,21 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: 'var(--primary)',
+        ring: 'var(--ring)',
+        background: 'var(--background)',
+        input: 'var(--input)',
+      },
+    },
   },
-  plugins: [],
+  variants: {
+    extend: {
+      backgroundColor: ['active', 'checked'],
+      borderColor: ['checked'],
+      translate: ['checked'],
+    },
+  },
   mode: 'jit',
 }
