@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/crypto-poetry-dapp/static/css/main.ce821e6c.css",
-    "main.js": "/crypto-poetry-dapp/static/js/main.847f82a0.js",
+    "main.css": "/crypto-poetry-dapp/static/css/main.e48e5ac2.css",
+    "main.js": "/crypto-poetry-dapp/static/js/main.05a446fb.js",
     "index.html": "/crypto-poetry-dapp/index.html",
-    "main.ce821e6c.css.map": "/crypto-poetry-dapp/static/css/main.ce821e6c.css.map",
-    "main.847f82a0.js.map": "/crypto-poetry-dapp/static/js/main.847f82a0.js.map"
+    "main.e48e5ac2.css.map": "/crypto-poetry-dapp/static/css/main.e48e5ac2.css.map",
+    "main.05a446fb.js.map": "/crypto-poetry-dapp/static/js/main.05a446fb.js.map"
   },
   "entrypoints": [
-    "static/css/main.ce821e6c.css",
-    "static/js/main.847f82a0.js"
+    "static/css/main.e48e5ac2.css",
+    "static/js/main.05a446fb.js"
   ]
 }
