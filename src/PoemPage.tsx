@@ -12,6 +12,7 @@ const PoemPage: React.FC = () => {
   const navigate = useNavigate();
   const [poem, setPoem] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [copySuccess, setCopySuccess] = useState<boolean>(false);
   const { program, isInitializing } = useProgram();
 
   useEffect(() => {
@@ -45,7 +46,6 @@ const PoemPage: React.FC = () => {
     try {
       const poemPublicKey = new PublicKey(poemHash);
 
-      // Generate new poetry for the existing account
       const genTx = await program.methods.generatePoetry()
         .accounts({
           poetryAccount: poemPublicKey,
@@ -54,7 +54,6 @@ const PoemPage: React.FC = () => {
 
       console.log("Regenerate poetry transaction signature", genTx);
 
-      // Fetch the newly generated poem
       const account = await program.account.poetryAccount.fetch(poemPublicKey) as PoetryAccount;
       setPoem(account.poem);
 
@@ -73,7 +72,6 @@ const PoemPage: React.FC = () => {
     try {
       const poemPublicKey = new PublicKey(poemHash);
 
-      // Close the account
       const closeTx = await program.methods.closePoetryAccount()
         .accounts({
           poetryAccount: poemPublicKey,
@@ -82,13 +80,21 @@ const PoemPage: React.FC = () => {
 
       console.log("Close account transaction signature", closeTx);
 
-      // Navigate back to home page
       navigate('/');
     } catch (error) {
       console.error("Error deleting poem:", error);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const copyUrlToClipboard = () => {
+    navigator.clipboard.writeText(window.location.href)
+      .then(() => {
+        setCopySuccess(true);
+        setTimeout(() => setCopySuccess(false), 2000);
+      })
+      .catch((err) => console.error('Failed to copy: ', err));
   };
 
   if (isInitializing || isLoading) {
@@ -100,7 +106,7 @@ const PoemPage: React.FC = () => {
       {poem ? (
         <>
           <RefrigeratorMagnetPoem poem={poem} />
-          <div className="mt-4">
+          <div className="mt-4 space-y-2">
             <button
               onClick={regeneratePoem}
               className="btn"
@@ -110,10 +116,16 @@ const PoemPage: React.FC = () => {
             </button>
             <button
               onClick={deletePoem}
-              className="btn mt-4"
+              className="btn"
               disabled={!wallet}
             >
               Delete Poem
+            </button>
+            <button
+              onClick={copyUrlToClipboard}
+              className="btn"
+            >
+              {copySuccess ? 'Copied!' : 'Copy URL'}
             </button>
           </div>
         </>
@@ -122,16 +134,16 @@ const PoemPage: React.FC = () => {
           <p>No poem found</p>
         </div>
       )}
-        <div>
-            {wallet && (
-            <button
-              onClick={() => navigate('/')}
-              className="btn mt-4"
-            >
-              Back to Home
-            </button>
-          )}
-        </div>
+      <div>
+        {wallet && (
+          <button
+            onClick={() => navigate('/')}
+            className="btn mt-4"
+          >
+            Back to Home
+          </button>
+        )}
+      </div>
     </div>
   );
 };
