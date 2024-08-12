@@ -5,12 +5,11 @@ import { useAnchorWallet } from '@solana/wallet-adapter-react';
 import { useProgram } from './ProgramContext';
 import UserPoemList from './UserPoemList';
 
-
-
 interface Poem {
   id: string;
   title: string;
   content: string;
+  isUserPoem: boolean;
 }
 
 interface PoetryAccount {
@@ -27,36 +26,34 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     if (program) {
-      fetchUserPoems();
+      fetchAllPoems();
     }
   }, [wallet, program]);
 
-  const fetchUserPoems = async () => {
+  const fetchAllPoems = async () => {
     if (!program) return;
 
     const replaceLastWordWithEllipsis = (text: string): string => {
-        const words = text.trim().split(/\s+/);
-        if (words.length <= 1) return text + ' ...';
-        return words.slice(0, -1).join(' ') + ' ...';
+      const words = text.trim().split(/\s+/);
+      if (words.length <= 1) return text + ' ...';
+      return words.slice(0, -1).join(' ') + ' ...';
     };
 
     setIsLoading(true);
     try {
       const accounts = await program.provider.connection.getProgramAccounts(program.programId);
 
-      const userPoems = await Promise.all(accounts.map(async ({ pubkey, account }) => {
+      const allPoems = await Promise.all(accounts.map(async ({ pubkey, account }) => {
         const poemAccount = await program.account.poetryAccount.fetch(pubkey) as PoetryAccount;
-        if ((wallet && poemAccount.owner.equals(wallet.publicKey)) || !wallet) {
-          return {
-            id: pubkey.toString(),
-            title: replaceLastWordWithEllipsis(poemAccount.poem.split('\n')[0]) || 'Untitled Poem',
-            content: poemAccount.poem,
-          };
-        }
-        return null;
+        return {
+          id: pubkey.toString(),
+          title: replaceLastWordWithEllipsis(poemAccount.poem.split('\n')[0]) || 'Untitled Poem',
+          content: poemAccount.poem,
+          isUserPoem: wallet ? poemAccount.owner.equals(wallet.publicKey) : false,
+        };
       }));
 
-      setPoems(userPoems.filter((poem): poem is Poem => poem !== null));
+      setPoems(allPoems);
     } catch (error) {
       console.error('Error fetching poems:', error);
     } finally {
@@ -84,7 +81,7 @@ const Home: React.FC = () => {
       console.log("Initialization transaction signature", initTx);
 
       // Refresh the poem list
-      await fetchUserPoems();
+      await fetchAllPoems();
 
       // Navigate to the new poem page
       navigate(`/poem/${newPoemAccount.publicKey.toBase58()}`);
@@ -100,10 +97,13 @@ const Home: React.FC = () => {
     return <div>Initializing program...</div>;
   }
 
+  const userPoems = poems.filter(poem => poem.isUserPoem);
+  const otherPoems = poems.filter(poem => !poem.isUserPoem);
+
   return (
     <div>
-        {wallet ? (
-            <>
+      {wallet ? (
+        <>
           <div className='text-center mt-4'>
             <button
               onClick={generateAndFetchPoem}
@@ -112,25 +112,26 @@ const Home: React.FC = () => {
             >
               {isLoading ? 'Generating...' : 'Generate New Poem'}
             </button>
-            
           </div>
           <h2 className="text-2xl font-bold mt-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-300">
             Your Poems
-            </h2>
-            </>
-        ) : (
-            <>
-                <p className="text-center text-xl bg-purple-800 bg-opacity-30 backdrop-filter backdrop-blur-lg rounded-2xl p-8">Connect your wallet to generate a poem</p>
-                <h2 className="text-2xl font-bold mt-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-300">
-                    Poems
-                </h2>
-            </>
-        
-        )}
-        
-        <UserPoemList poems={poems} isLoading={isLoading} />
-
-      </div>
+          </h2>
+          <UserPoemList poems={userPoems} isLoading={isLoading} />
+          <h2 className="text-2xl font-bold mt-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-300">
+            Other Poems
+          </h2>
+          <UserPoemList poems={otherPoems} isLoading={isLoading} />
+        </>
+      ) : (
+        <>
+          <p className="text-center text-xl bg-purple-800 bg-opacity-30 backdrop-filter backdrop-blur-lg rounded-2xl p-8">Connect your wallet to generate a poem</p>
+          <h2 className="text-2xl font-bold mt-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-300">
+            Poems
+          </h2>
+          <UserPoemList poems={poems} isLoading={isLoading} />
+        </>
+      )}
+    </div>
   );
 };
 
