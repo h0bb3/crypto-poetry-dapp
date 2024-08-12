@@ -5,6 +5,7 @@ import { useAnchorWallet } from '@solana/wallet-adapter-react';
 import { PoetryAccount } from './types/program-types';
 import RefrigeratorMagnetPoem from './RefrigeratorMagnetPoem';
 import { useProgram } from './ProgramContext';
+import toast from 'react-hot-toast';
 
 const PoemPage: React.FC = () => {
   const { poemHash } = useParams<{ poemHash: string }>();
@@ -63,9 +64,10 @@ const PoemPage: React.FC = () => {
 
       const account = await program.account.poetryAccount.fetch(poemPublicKey) as PoetryAccount;
       setPoem(account.poem);
+      toast.success('Poem regenerated successfully!');
     } catch (error) {
       console.error("Error in poem regeneration process:", error);
-      setError("Failed to regenerate the poem. Please try again.");
+      toast.error('Failed to regenerate the poem. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -88,10 +90,11 @@ const PoemPage: React.FC = () => {
 
       console.log("Close account transaction signature", closeTx);
 
+      toast.success('Poem deleted successfully!');
       navigate('/');
     } catch (error) {
       console.error("Error deleting poem:", error);
-      setError("Failed to delete the poem. Please try again.");
+      toast.error('Failed to delete the poem. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -102,8 +105,12 @@ const PoemPage: React.FC = () => {
       .then(() => {
         setCopySuccess(true);
         setTimeout(() => setCopySuccess(false), 2000);
+        toast.success('URL copied to clipboard!');
       })
-      .catch((err) => console.error('Failed to copy: ', err));
+      .catch((err) => {
+        console.error('Failed to copy: ', err);
+        toast.error('Failed to copy URL. Please try again.');
+      });
   };
 
   const renderPoemSignature = () => {
@@ -138,14 +145,16 @@ const PoemPage: React.FC = () => {
                 <button
                   onClick={regeneratePoem}
                   className="btn"
+                  disabled={isLoading}
                 >
-                  Regenerate Poem
+                  {isLoading ? 'Regenerating...' : 'Regenerate Poem'}
                 </button>
                 <button
                   onClick={deletePoem}
                   className="btn"
+                  disabled={isLoading}
                 >
-                  Delete Poem
+                  {isLoading ? 'Deleting...' : 'Delete Poem'}
                 </button>
               </>
             )}

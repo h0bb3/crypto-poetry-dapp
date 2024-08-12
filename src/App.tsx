@@ -1,6 +1,7 @@
 import React from 'react';
 import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import { Toaster } from 'react-hot-toast';
 import { ProgramProvider } from './ProgramContext';
 import Home from './Home';
 import PoemPage from './PoemPage';
@@ -54,6 +55,35 @@ const AppContents: React.FC = () => {
                 <Route path="/" element={<Home />} />
                 <Route path="/poem/:poemHash" element={<PoemPage />} />
               </Routes>
+              {/* Toaster setup */}
+                <Toaster 
+                position="top-right"
+                toastOptions={{
+                  duration: 5000,
+                  style: {
+                    background: '#2D1B69',  // Dark purple background
+                    color: '#FFA6C9',       // Light pink text
+                    borderRadius: '10px',   // Rounded corners
+                    padding: '16px',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                  },
+                  success: {
+                    iconTheme: {
+                      primary: '#FFA6C9',   // Light pink icon
+                      secondary: '#2D1B69', // Dark purple background
+                    },
+                  },
+                  error: {
+                    style: {
+                      background: '#69142D', // Darker red-purple for errors
+                    },
+                    iconTheme: {
+                      primary: '#FFA6C9',    // Light pink icon
+                      secondary: '#69142D',  // Dark red-purple background
+                    },
+                  },
+                }}
+              />
             </Router>
           </div>
         </div>
